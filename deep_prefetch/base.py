@@ -294,9 +294,9 @@ def deep_prefetch_related_objects(objects, lookups):
                 cache = seen[obj_model][attr]['cache'][obj]
                 to_discard.add(e)
                 set_cache(obj, single, cache, cache_name, attr)
-            if cache is not None:              # if data was cached
-                clipped = clip_lookup(lookup)  # it still must get
-                if clipped:                    # into `buffer`.
+            if cache is not None and len(cache) != 0:  # if data was cached
+                clipped = clip_lookup(lookup)          # it still must get
+                if clipped:                            # into `buffer`.
                     update_buffer(buffer, cache, [clipped])
 
         current -= to_discard
