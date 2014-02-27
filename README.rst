@@ -2,7 +2,8 @@
 django-deep-prefetch
 ====================
 Django ``prefetch_related`` ORM method can't prefetch lookups through
-``GenericForeginKey``'s. This application solves this problem.
+``GenericForeginKey``'s if they target different models.
+This application solves this problem.
 
 With ``GenericForeignKey`` functionality, it is possible to refer to arbitrary
 model. Let's ay we have Like model, which is naturally may refer to many types
@@ -12,7 +13,7 @@ And so it is desireable to be able to perform such lookups::
 
     Like.objects.prefetch_related('content_object__followers', 'content_object__people_on_photo')
 
-where ``followers`` is the field of ``User`` model and ```people_on_photo``
+where ``followers`` is the field of ``User`` model and ``people_on_photo``
 the field of ``Photo`` model.
 
 Currently ``.prefetch_related`` will raise an error like
@@ -28,9 +29,10 @@ such lookups possible.
 
 Usage
 -----
-Create `custom manager`_ for your model using ``DeepPrefetchQuerySet``, ``DeepPrefetchQuerySetMixin``,
-``DeepPrefetchManager``, ``DeepPrefetchManagerMixin`` classes from
-``deep_prefetch.utils`` module. Then just use ``prefetch_related`` ORM method.
+Create `custom manager`_ for your model using ``DeepPrefetchQuerySet``,
+``DeepPrefetchQuerySetMixin``, ``DeepPrefetchManager``,
+``DeepPrefetchManagerMixin`` classes from ``deep_prefetch.utils`` module.
+Then just use ``prefetch_related`` ORM method.
 
 Tests
 -----
