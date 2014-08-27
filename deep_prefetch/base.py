@@ -106,7 +106,6 @@ def get_cache(obj, prefetcher, descriptor, attr):
     except AttributeError:
         raise ValueError('Cache is unset!')
     except KeyError:
-        import ipdb; ipdb.set_trace()
         raise ValueError
 
 def set_cache(obj, single, cache, cache_name, attr):
