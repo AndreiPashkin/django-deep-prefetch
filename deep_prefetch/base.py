@@ -93,12 +93,14 @@ def update_buffer(buffer, objects, lookups):
     for lookup in lookups:
         buffer[lookup][model].update(objects)
 
-def get_cache(obj, prefetcher, descriptor, attr):
+def get_info(prefetcher, descriptor):
+    info = DESCRIPTORS[prefetcher.__class__.__name__]
+    single = info['single']
+    cache_name = info['cache_attr'](prefetcher, descriptor)
+    return single, cache_name
 
+def get_cache(obj, single, cache_name, attr):
     try:
-        info = DESCRIPTORS[prefetcher.__class__.__name__]
-        single = info['single']
-        cache_name = info['cache_attr'](prefetcher, descriptor)
         if single:
             return [getattr(obj, cache_name)]
         else:
@@ -217,7 +219,6 @@ def deep_prefetch_related_objects(objects, lookups):
     #     Objects discovered while traversing DB structure are being added
     #     and processed objects are removed.
     #todo beauty and refactoring
-
     if len(objects) == 0:
         return # nothing to do
 
@@ -233,7 +234,6 @@ def deep_prefetch_related_objects(objects, lookups):
                       #              cache_name -> str
                       #              cache      ->
                       #                         obj -> [cache]
-
     while True:
         try:
             lookup = last(buffer.keys())
@@ -273,7 +273,6 @@ def deep_prefetch_related_objects(objects, lookups):
                     [clipped])
             continue
 
-        single = cache_name = None
 
         to_discard = set()
         for e in current: # no need to query for already prefetched data
@@ -282,7 +281,9 @@ def deep_prefetch_related_objects(objects, lookups):
             p, d, _, is_fetched = get_prefetcher(obj, attr)
             cache = None
             if is_fetched: # case of Django internal cache
-                cache = get_cache(obj, p, d, attr)
+                single, cache_name = get_info(p, d)
+                cache = get_cache(obj, single, cache_name, attr)
+                single, cache_name = get_info(p, d)
                 update_seen(seen, model, attr, single, cache_name, obj, cache)
                 to_discard.add(e)
             elif (model in seen and  # case of `seen`

@@ -6,7 +6,7 @@ from django.db import models
 from deep_prefetch.utils import DeepPrefetchQuerySet
 
 
-class LikeManager(models.Manager):
+class DeepPrefetchManager(models.Manager):
     def get_query_set(self):
         return DeepPrefetchQuerySet(self.model, using=self.db)
 
@@ -15,7 +15,7 @@ class Like(models.Model):
     object_id = models.PositiveSmallIntegerField()
     content_object = generic.GenericForeignKey()
     objects = models.Manager()
-    deep = LikeManager()
+    deep = DeepPrefetchManager()
 
 class Comment(models.Model):
     content_type = models.ForeignKey(ContentType, related_name='comments')
@@ -39,7 +39,11 @@ class BlogPost(models.Model):
     related_posts = models.ManyToManyField('self')
     comments = generic.GenericRelation(Comment)
 
+class SimpleModel(models.Model):
+    name = models.CharField(max_length=50)
 
-
-
+class FKModel(models.Model):
+    name = models.CharField(max_length=50)
+    fk = models.ForeignKey('SimpleModel', related_name='fks')
+    deep = DeepPrefetchManager()
 

@@ -11,8 +11,7 @@ import pytest
 from time import time
 import traceback
 
-from .models import Like, Comment, Photo, User
-
+from .models import Like, Comment, Photo, User, SimpleModel, FKModel
 
 import django
 import deep_prefetch
@@ -56,3 +55,13 @@ def test_prefetch_through_gfk():
         assert expected_objects == actual_objects
 
         assert len(queries) == len([Like, Photo, Comment, User])
+
+
+@pytest.mark.django_db
+def test_single_seen():
+    """If relation is single and if traversed more than once - it fails."""
+    simple_model = autofixture.create_one(SimpleModel)
+    autofixture.create(FKModel, 3, field_values={'fk': simple_model})
+
+    queryset = FKModel.deep.prefetch_related('fk', 'fk__fks__fk')
+    list(queryset)
