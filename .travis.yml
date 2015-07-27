@@ -1,0 +1,8 @@
+sudo: required
+language: python
+install:
+  - pip install tox==1.9.2
+env:
+  - TOX_ENV=py2.7-dj1.4.10
+script:
+  - tox -e $TOX_ENV -v
