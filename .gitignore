@@ -1,0 +1,10 @@
+*.pyc
+.directory
+.project
+.idea/
+.vagrant/
+.env/
+.tox/
+venv/
+.git/
+local_settings.py
