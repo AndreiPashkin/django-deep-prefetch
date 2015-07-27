@@ -1,6 +1,11 @@
 ====================
 django-deep-prefetch
 ====================
+
+.. image:: https://travis-ci.org/AndrewPashkin/django-deep-prefetch.svg?branch=master
+   :alt: Build Status
+   :target: https://travis-ci.org/AndrewPashkin/django-deep-prefetch
+
 Django ``prefetch_related`` ORM method can't prefetch lookups through
 ``GenericForeginKey``'s if they target different models.
 This application solves this problem.
